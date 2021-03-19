@@ -1,0 +1,6 @@
+.env
+test.py
+/db
+/configdb
+search_youtube_videos.py
+.gitignore
