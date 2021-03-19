@@ -24,14 +24,19 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: ${USERNAME}
       ME_CONFIG_BASICAUTH_PASSWORD: ${PASSWORD}
 
-  web:
+  flask:
     build: .
     volumes:
-      - .:/code
+      - .:/code/
+    tty: true
     env_file:
       - .env
     depends_on:
       - mongo
       - mongo-express
-    # ports:
-    #   - "8000:8000"
+    ports:
+      - "5000:5000"
+    environment:
+      TZ: "Asia/Tokyo"
+      FLASK_ENV: "development"
+    command: flask run --host 0.0.0.0 --port 5000
