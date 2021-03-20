@@ -12,6 +12,7 @@ PASSWORD = os.environ["PASSWORD"]
 logging.getLogger("googleapiclient.discovery_cashe").setLevel(logging.ERROR)
 
 search_words = ["岸優太", "平野紫耀", "永瀬廉", "神宮寺勇太", "髙橋海人", "岩橋玄樹", "king&prince"]
+# members_count_list = []
 
 
 def main():
@@ -23,8 +24,7 @@ def main():
     #         save_to_mongodb(collection, items_per_page)
     #         time.sleep(1)
     # show_top_videos(collection)
-    for count_video in count_videos(collection):
-        print(count_video)
+    return count_videos(collection)
 
 
 def search_videos(query: str, max_pages: int = 5) -> Iterator[List[dict]]:
@@ -58,9 +58,11 @@ def save_to_mongodb(collection: Collection, items: List[dict]):
 
 
 def count_videos(collection: Collection):
+    members_count_dict = {}
     for search_word in search_words:
-        # print(f'{search_word}: {collection.find({"snippet.title": {"$regex": search_word}}).count()}')
-        yield {search_word: collection.count({"snippet.title": {"$regex": search_word, "$options": "i"}})}
+        members_count_dict[search_word] = collection.count({"snippet.title": {"$regex": search_word, "$options": "i"}})
+    members_count_dict_sorted = sorted(members_count_dict.items(), key=lambda x: x[1], reverse=True)
+    return members_count_dict_sorted
 
 
 def show_top_videos(collection: Collection):

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>がんばろう！</h3>
+ここに名前とカウント数を表示するよ</br>
+{% for count_video in count_videos %}
+<!-- {{loop.index0}} -->
+{{ count_video[0] }}:{{ count_video[1] }}<br>
+{% endfor %}
+{% endblock %}
