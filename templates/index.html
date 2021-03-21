@@ -3,7 +3,6 @@
 <h3>がんばろう！</h3>
 ここに名前とカウント数を表示するよ</br>
 {% for count in count_video %}
-{{ count[0] }}:{{ count[1] }}<br>
+<a href="{{ url_for('show_videos', name=count[0]) }}">{{ count[0] }}</a>:{{ count[1] }}<br>
 {% endfor %}
-<a href="{{ url_for('show_videos') }}">岸優太</a>
 {% endblock %}

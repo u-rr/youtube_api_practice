@@ -24,10 +24,10 @@ def index(collection=collection, search_words=search_words):
 
 
 # メンバーの名前ごとにURL必要？
-@app.route("/岸優太")
-def show_videos(collection=collection, search_words=search_words):
-    video_id = get_videos_id(collection, "岸優太")
-    return render_template("view_videos.html", title="view_videos", video_id=video_id)
+@app.route("/<name>")
+def show_videos(collection=collection, name=None):
+    video_id = get_videos_id(collection, name)  # nameの値はindex.htmlから取得してる
+    return render_template("view_videos.html", title="view_videos", video_id=video_id, name=name)
 
 
 if __name__ == "__main__":
