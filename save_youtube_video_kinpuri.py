@@ -11,7 +11,6 @@ PASSWORD = os.environ["PASSWORD"]
 
 logging.getLogger("googleapiclient.discovery_cashe").setLevel(logging.ERROR)
 
-search_words = ["岸優太", "平野紫耀", "永瀬廉", "神宮寺勇太", "髙橋海人", "岩橋玄樹", "king&prince"]
 # members_count_list = []
 
 
@@ -19,12 +18,15 @@ def main():
     mongo_client = MongoClient(f"mongodb://{USERNAME}:{PASSWORD}@mongo:27017/")
     collection = mongo_client.youtube.videos
 
+    search_words = ["岸優太", "平野紫耀", "永瀬廉", "神宮寺勇太", "髙橋海人", "岩橋玄樹", "king&prince"]
     # for search_word in search_words:
     #     for items_per_page in search_videos(search_word):
     #         save_to_mongodb(collection, items_per_page)
     #         time.sleep(1)
     # show_top_videos(collection)
-    return count_videos(collection)
+    for line in get_videos_id(collection, search_words):
+        yield line
+    return count_videos(collection, search_words)
 
 
 def search_videos(query: str, max_pages: int = 5) -> Iterator[List[dict]]:
@@ -57,7 +59,7 @@ def save_to_mongodb(collection: Collection, items: List[dict]):
     logging.info(f"Upserted {result.upserted_count} documents.")
 
 
-def count_videos(collection: Collection):
+def count_videos(collection: Collection, search_words: list):
     members_count_dict = {}
     for search_word in search_words:
         members_count_dict[search_word] = collection.count({"snippet.title": {"$regex": search_word, "$options": "i"}})
@@ -68,6 +70,13 @@ def count_videos(collection: Collection):
 def show_top_videos(collection: Collection):
     for item in collection.find().sort("statistics.viewCount", DESCENDING).limit(5):
         print(item["statistics"]["viewCount"], item["snippet"]["title"])
+
+
+# 再生数が多い順にソートして、最初の5件のidを取得する
+def get_videos_id(collection: Collection, search_words: str):
+    for search_word in search_words:
+        for item in collection.find({"snippet.title": {"$regex": search_word, "$options": "i"}}).sort("statistics.viewCount", DESCENDING).limit(5):
+            yield item["id"]
 
 
 if __name__ == "__main__":
