@@ -15,7 +15,7 @@ search_words = ["岸優太", "平野紫耀", "永瀬廉", "神宮寺勇太", "�
 
 
 @app.route("/")
-def index():
+def index(collection=collection, search_words=search_words):
 
     # count_videos = main()
     count_video = count_videos(collection, search_words)
@@ -23,9 +23,10 @@ def index():
     return render_template("index.html", title="youtubeAPIアプリ", count_video=count_video)
 
 
+# メンバーの名前ごとにURL必要？
 @app.route("/岸優太")
-def show_videos():
-    video_id = get_videos_id(collection, search_words)
+def show_videos(collection=collection, search_words=search_words):
+    video_id = get_videos_id(collection, "岸優太")
     return render_template("view_videos.html", title="view_videos", video_id=video_id)
 
 

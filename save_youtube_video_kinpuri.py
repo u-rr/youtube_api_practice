@@ -73,10 +73,11 @@ def show_top_videos(collection: Collection):
 
 
 # 再生数が多い順にソートして、最初の5件のidを取得する
-def get_videos_id(collection: Collection, search_words: str):
-    for search_word in search_words:
-        for item in collection.find({"snippet.title": {"$regex": search_word, "$options": "i"}}).sort("statistics.viewCount", DESCENDING).limit(5):
-            yield item["id"]
+def get_videos_id(collection: Collection, name: str):
+    # for search_word in search_words:
+    #     for item in collection.find({"snippet.title": {"$regex": search_word, "$options": "i"}}).sort("statistics.viewCount", DESCENDING).limit(5):
+    for item in collection.find({"snippet.title": {"$regex": name, "$options": "i"}}).sort("statistics.viewCount", DESCENDING).limit(5):
+        yield item["id"]
 
 
 if __name__ == "__main__":
