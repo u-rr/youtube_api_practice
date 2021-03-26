@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-{% for id in video_id %}
-<iframe id="ytplayer" type="text/html" width="320" src="https://www.youtube.com/embed/{{ id }}?autoplay=1"
+<p>再生数順にトップ5を表示中！</p>
+{% for id in videos_id_top_viewcount %}
+<iframe id="ytplayer" type="text/html" width="320" src="https://www.youtube.com/embed/{{ id }}"
+    frameborder="0"></iframe>
+{% endfor %}
+<p>投稿日が新しい順にトップ5を表示中！</p>
+{% for id in videos_id_latest_published %}
+<iframe id="ytplayer" type="text/html" width="320" src="https://www.youtube.com/embed/{{ id }}"
     frameborder="0"></iframe>
 {% endfor %}
 {% endblock %}

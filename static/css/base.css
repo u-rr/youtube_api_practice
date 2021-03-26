@@ -1,0 +1,19 @@
+* {
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+}
+ 
+.header {
+    background-color: pink;
+}
+
+.footer {
+    height: 100px;
+    color: white;
+    background-color: darkslategrey;
+}
+
+body p {
+    margin-top: 15px;
+}

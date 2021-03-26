@@ -1,14 +1,21 @@
 <!doctype html>
-<html>
+<html lang="ja">
 
 <head>
-    <title>{{ title }}</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <title>title</title>
 </head>
+<!-- ヘッダー -->
+{% include "header.html" %}
 
 <body>
     {% block content %}
     <!-- ここにメインコンテンツを書く -->
     {% endblock %}
 </body>
+
+<!-- フッタ -->
+{% include "footer.html" %}
 
 </html>

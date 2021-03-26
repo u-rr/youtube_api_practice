@@ -1,5 +1,6 @@
 import os
 import logging
+import time
 from typing import Iterator, List
 from apiclient.discovery import build
 from pymongo import MongoClient, ReplaceOne, DESCENDING
@@ -11,22 +12,17 @@ PASSWORD = os.environ["PASSWORD"]
 
 logging.getLogger("googleapiclient.discovery_cashe").setLevel(logging.ERROR)
 
-# members_count_list = []
-
 
 def main():
     mongo_client = MongoClient(f"mongodb://{USERNAME}:{PASSWORD}@mongo:27017/")
     collection = mongo_client.youtube.videos
 
     search_words = ["岸優太", "平野紫耀", "永瀬廉", "神宮寺勇太", "髙橋海人", "岩橋玄樹", "king&prince"]
-    # for search_word in search_words:
-    #     for items_per_page in search_videos(search_word):
-    #         save_to_mongodb(collection, items_per_page)
-    #         time.sleep(1)
-    # show_top_videos(collection)
-    for line in get_videos_id(collection, search_words):
-        yield line
-    return count_videos(collection, search_words)
+    for search_word in search_words:
+        for items_per_page in search_videos(search_word):
+            save_to_mongodb(collection, items_per_page)
+            time.sleep(1)
+
 
 
 def search_videos(query: str, max_pages: int = 5) -> Iterator[List[dict]]:
@@ -73,10 +69,16 @@ def show_top_videos(collection: Collection):
 
 
 # 再生数が多い順にソートして、最初の5件のidを取得する
-def get_videos_id(collection: Collection, name: str):
+def get_videos_id_top_viewcount(collection: Collection, name: str):
     # for search_word in search_words:
     #     for item in collection.find({"snippet.title": {"$regex": search_word, "$options": "i"}}).sort("statistics.viewCount", DESCENDING).limit(5):
     for item in collection.find({"snippet.title": {"$regex": name, "$options": "i"}}).sort("statistics.viewCount", DESCENDING).limit(5):
+        yield item["id"]
+
+
+# 投稿数が新しい順にソートして最初の5件のidを取得する
+def get_videos_id_latest_published(collection: Collection, name: str):
+    for item in collection.find({"snippet.title": {"$regex": name, "$options": "i"}}).sort("snippet.publishedAt", DESCENDING).limit(5):
         yield item["id"]
 
 

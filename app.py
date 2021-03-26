@@ -1,7 +1,7 @@
 import os
 from pymongo import MongoClient
 from flask import Flask, render_template
-from save_youtube_video_kinpuri import count_videos, get_videos_id
+from save_youtube_video_kinpuri import count_videos, get_videos_id_top_viewcount, get_videos_id_latest_published
 
 app = Flask(__name__)
 
@@ -26,8 +26,15 @@ def index(collection=collection, search_words=search_words):
 # メンバーの名前ごとにURL必要？
 @app.route("/<name>")
 def show_videos(collection=collection, name=None):
-    video_id = get_videos_id(collection, name)  # nameの値はindex.htmlから取得してる
-    return render_template("view_videos.html", title="view_videos", video_id=video_id, name=name)
+    videos_id_top_viewcount = get_videos_id_top_viewcount(collection, name)  # nameの値はindex.htmlから取得してる
+    videos_id_latest_published = get_videos_id_latest_published(collection, name)
+    return render_template(
+        "view_videos.html",
+        title="view_videos",
+        videos_id_top_viewcount=videos_id_top_viewcount,
+        videos_id_latest_published=videos_id_latest_published,
+        name=name,
+    )
 
 
 if __name__ == "__main__":

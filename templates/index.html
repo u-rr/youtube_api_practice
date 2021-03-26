@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>がんばろう！</h3>
-ここに名前とカウント数を表示するよ</br>
+<h3>King & Princeと各メンバーごとのトータル動画数をランキング順に表示しています。</h3>
 {% for count in count_video %}
-<a href="{{ url_for('show_videos', name=count[0]) }}">{{ count[0] }}</a>:{{ count[1] }}<br>
+<p><a href="{{ url_for('show_videos', name=count[0]) }}">{{ loop.index }}位　{{ count[0] }}</a></p>
+<p>合計動画数：{{ count[1] }}</p>
 {% endfor %}
 {% endblock %}
