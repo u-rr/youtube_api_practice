@@ -1,4 +1,5 @@
 .env
+.envrc
 test.py
 /db
 /configdb
