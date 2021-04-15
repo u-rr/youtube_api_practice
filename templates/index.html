@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 <h3>King & Princeと各メンバーごとのトータル動画数をランキング順に表示しています。</h3>
-{% for count in count_video %}
-<p><a href="{{ url_for('show_videos', name=count[0]) }}">{{ loop.index }}位　{{ count[0] }}</a></p>
-<p>合計動画数：{{ count[1] }}</p>
+{% for member, total_videos_count in count_video %}
+<p><a href="{{ url_for('show_videos', name=member) }}">{{ loop.index }}位　{{ member }}</a></p>
+<p>合計動画数：{{ total_videos_count }}</p>
 {% endfor %}
 {% endblock %}

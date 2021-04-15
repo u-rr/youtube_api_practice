@@ -1,9 +1,9 @@
-version: "3.1"
+version: "3"
 
 services:
   mongo:
     image: mongo
-    restart: always
+    # restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${PASSWORD}
@@ -26,17 +26,18 @@ services:
 
   flask:
     build: .
+    # image: 531974357576.dkr.ecr.ap-northeast-1.amazonaws.com/youtube_matome:latest
     volumes:
       - .:/code/
-    tty: true
+    # tty: true
     env_file:
       - .env
     depends_on:
       - mongo
       - mongo-express
     ports:
-      - "5000:5000"
+      - "8080:8080"
     environment:
       TZ: "Asia/Tokyo"
       FLASK_ENV: "development"
-    command: flask run --host 0.0.0.0 --port 5000
+    command: flask run --host 0.0.0.0 --port 8080

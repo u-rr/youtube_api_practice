@@ -24,7 +24,6 @@ def main():
             time.sleep(1)
 
 
-
 def search_videos(query: str, max_pages: int = 5) -> Iterator[List[dict]]:
     youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
     search_request = youtube.search().list(part="id", q=query, type="video", maxResults=50)

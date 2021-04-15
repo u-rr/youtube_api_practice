@@ -4,4 +4,4 @@ test.py
 /db
 /configdb
 search_youtube_videos.py
-.save_youtube_video_metadata.py
+save_youtube_video_metadata.py
