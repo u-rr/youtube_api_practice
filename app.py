@@ -1,7 +1,7 @@
 import os
 from pymongo import MongoClient
 from flask import Flask, render_template
-from save_youtube_video_kinpuri import count_videos, get_videos_id_top_viewcount, get_videos_id_latest_published
+from get_collection import count_videos, get_videos_id_top_viewcount, get_videos_id_latest_published
 
 app = Flask(__name__)
 
