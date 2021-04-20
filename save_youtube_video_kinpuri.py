@@ -6,24 +6,33 @@ from apiclient.discovery import build
 from pymongo import MongoClient, ReplaceOne, DESCENDING
 from pymongo.collection import Collection
 
+
 YOUTUBE_API_KEY = os.environ["YOUTUBE_API_KEY"]
 USERNAME = os.environ["USERNAME"]
 PASSWORD = os.environ["PASSWORD"]
+DB_URL = os.environ["DB_URL"]
 
 logging.getLogger("googleapiclient.discovery_cashe").setLevel(logging.ERROR)
 
 
 def main():
-    mongo_client = MongoClient(f"mongodb://{USERNAME}:{PASSWORD}@mongo:27017/")
+    # ローカルDB
+    # mongo_client = MongoClient(f"mongodb://{USERNAME}:{PASSWORD}@mongo:27017/")
+    # collection = mongo_client.youtube.videos
+
+    # MongoDB atlas
+    mongo_client = MongoClient(DB_URL)
     collection = mongo_client.youtube.videos
 
-    search_words = ["岸優太", "平野紫耀", "永瀬廉", "神宮寺勇太", "髙橋海人", "岩橋玄樹", "king&prince"]
+    search_words = ["岸優太", "平野紫耀", "永瀬廉", "神宮寺勇太", "髙橋海人", "king&prince"]
+
     for search_word in search_words:
         for items_per_page in search_videos(search_word):
             save_to_mongodb(collection, items_per_page)
             time.sleep(1)
 
 
+# youtubeAPIを叩く
 def search_videos(query: str, max_pages: int = 5) -> Iterator[List[dict]]:
     youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
     search_request = youtube.search().list(part="id", q=query, type="video", maxResults=50)
@@ -41,6 +50,7 @@ def search_videos(query: str, max_pages: int = 5) -> Iterator[List[dict]]:
         i += 1
 
 
+# DBに保存する
 def save_to_mongodb(collection: Collection, items: List[dict]):
     for item in items:
         item["_id"] = item["id"]
@@ -54,6 +64,7 @@ def save_to_mongodb(collection: Collection, items: List[dict]):
     logging.info(f"Upserted {result.upserted_count} documents.")
 
 
+# メンバー名ごとの動画数をカウントする
 def count_videos(collection: Collection, search_words: list):
     members_count_dict = {}
     for search_word in search_words:
@@ -62,15 +73,8 @@ def count_videos(collection: Collection, search_words: list):
     return members_count_dict_sorted
 
 
-def show_top_videos(collection: Collection):
-    for item in collection.find().sort("statistics.viewCount", DESCENDING).limit(5):
-        print(item["statistics"]["viewCount"], item["snippet"]["title"])
-
-
 # 再生数が多い順にソートして、最初の5件のidを取得する
 def get_videos_id_top_viewcount(collection: Collection, name: str):
-    # for search_word in search_words:
-    #     for item in collection.find({"snippet.title": {"$regex": search_word, "$options": "i"}}).sort("statistics.viewCount", DESCENDING).limit(5):
     for item in collection.find({"snippet.title": {"$regex": name, "$options": "i"}}).sort("statistics.viewCount", DESCENDING).limit(5):
         yield item["id"]
 

@@ -8,10 +8,12 @@ app = Flask(__name__)
 YOUTUBE_API_KEY = os.environ["YOUTUBE_API_KEY"]
 USERNAME = os.environ["USERNAME"]
 PASSWORD = os.environ["PASSWORD"]
-
-mongo_client = MongoClient(f"mongodb://{USERNAME}:{PASSWORD}@mongo:27017/")
+DB_URL = os.environ["DB_URL"]
+# mongo_client = MongoClient(f"mongodb://{USERNAME}:{PASSWORD}@mongo:27017/")
+# collection = mongo_client.youtube.videos
+mongo_client = MongoClient(DB_URL)
 collection = mongo_client.youtube.videos
-search_words = ["岸優太", "平野紫耀", "永瀬廉", "神宮寺勇太", "髙橋海人", "岩橋玄樹", "king&prince"]
+search_words = ["岸優太", "平野紫耀", "永瀬廉", "神宮寺勇太", "髙橋海人", "king&prince"]
 
 
 @app.route("/")
@@ -23,7 +25,7 @@ def index(collection=collection, search_words=search_words):
     return render_template("index.html", title="youtubeAPIアプリ", count_video=count_video)
 
 
-# メンバーの名前ごとにURL必要？
+# メンバー名を取得して対応する動画を表示
 @app.route("/<name>")
 def show_videos(collection=collection, name=None):
     videos_id_top_viewcount = get_videos_id_top_viewcount(collection, name)  # nameの値はindex.htmlから取得してる

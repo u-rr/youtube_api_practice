@@ -1,4 +1,4 @@
 google-api-python-client
-pymongo
+pymongo[tls,srv]==3.6.1
 flask
 python-dotenv
