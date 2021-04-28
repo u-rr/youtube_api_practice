@@ -5,3 +5,4 @@ test.py
 /configdb
 search_youtube_videos.py
 .save_youtube_video_metadata.py
+secret.yaml
